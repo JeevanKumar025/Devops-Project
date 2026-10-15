@@ -1,0 +1,74 @@
+<!doctype html>
+<!--
+  AI assistance: This template was drafted with OpenAI Codex and will be
+  reviewed, understood, and adapted by the student before CS50 submission.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CampusEats makes campus meals simple.">
+    <title>{% block title %}CampusEats{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/shop.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/motion.css') }}">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="navbar container" aria-label="Main navigation">
+        <a class="brand" href="{{ url_for('index') }}" aria-label="CampusEats home">
+          <span class="brand-mark">CE</span>
+          <span>CampusEats</span>
+        </a>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">Menu</button>
+        <div class="nav-links">
+          {% if current_user and current_user.role == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}">Overview</a>
+            <a href="{{ url_for('admin_orders') }}">Orders</a>
+            <a href="{{ url_for('admin_menu') }}">Menu management</a>
+            <a class="button button-ghost" href="{{ url_for('logout') }}">Log out</a>
+          {% elif session.user_id %}
+            <a href="{{ url_for('menu') }}">Menu</a>
+            <a href="{{ url_for('dashboard') }}">Dashboard</a>
+            <a href="{{ url_for('cart') }}">Cart{% if session.cart %} ({{ session.cart.values() | sum }}){% endif %}</a>
+            <a class="button button-ghost" href="{{ url_for('logout') }}">Log out</a>
+          {% else %}
+            <a href="{{ url_for('menu') }}">Menu</a>
+            <a class="button button-ghost" href="{{ url_for('login') }}">Log in</a>
+            <a class="button button-primary" href="{{ url_for('register') }}">Get started</a>
+          {% endif %}
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="flash-container container" aria-live="polite">
+            {% for category, message in messages %}
+              <div class="flash flash-{{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block main %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">CE</span><span>CampusEats</span></a>
+        <p>Good food. Less waiting. More campus life.</p>
+        <p class="muted">&copy; 2026 CampusEats</p>
+      </div>
+    </footer>
+    <script src="https://unpkg.com/lucide@0.542.0/dist/umd/lucide.min.js" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+  </body>
+</html>

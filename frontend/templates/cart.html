@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Your cart | CampusEats{% endblock %}
+{% block main %}
+  <section class="page-heading"><div class="container"><p class="eyebrow">ALMOST THERE</p><h1>Your <em>cart.</em></h1></div></section>
+  <section class="cart-page container">
+    {% if items %}
+      <div class="cart-list">
+        {% for item in items %}<article class="cart-row"><div class="cart-food-icon"><i data-lucide="utensils" aria-hidden="true"></i></div><div class="cart-item-name"><h2>{{ item.name }}</h2><p>{{ item.price | price }} each</p>{% if not item.available %}<span class="unavailable">Unavailable — remove to continue</span>{% endif %}</div>
+          <div class="quantity-controls"><form method="post" action="{{ url_for('update_cart', food_id=item.id) }}"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}"><input name="action" value="decrease" type="hidden"><button aria-label="Decrease {{ item.name }} quantity">−</button></form><strong>{{ item.quantity }}</strong><form method="post" action="{{ url_for('update_cart', food_id=item.id) }}"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}"><input name="action" value="increase" type="hidden"><button aria-label="Increase {{ item.name }} quantity">+</button></form></div>
+          <strong class="line-total">{{ item.line_total | price }}</strong><form method="post" action="{{ url_for('update_cart', food_id=item.id) }}"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}"><input name="action" value="remove" type="hidden"><button class="remove-button" type="submit">Remove</button></form>
+        </article>{% endfor %}
+      </div>
+      <aside class="order-summary"><h2>Order summary</h2><div><span>Subtotal</span><strong>{{ total | price }}</strong></div><div><span>Service charge</span><strong>₹0.00</strong></div><div class="summary-total"><span>Total</span><strong>{{ total | price }}</strong></div><a class="button button-primary button-large form-submit" href="{{ url_for('checkout') }}">Continue to checkout →</a><form method="post" action="{{ url_for('clear_cart') }}"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}"><button class="clear-cart" type="submit">Empty cart</button></form></aside>
+    {% else %}
+      <div class="empty-state"><i data-lucide="shopping-bag" aria-hidden="true"></i><h2>Your cart is empty</h2><p>Your next campus meal is waiting on the menu.</p><a class="button button-primary" href="{{ url_for('menu') }}">Browse menu →</a></div>
+    {% endif %}
+  </section>
+{% endblock %}

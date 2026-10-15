@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Manage order #{{ order.id }} | CampusEats{% endblock %}
+{% block main %}
+  <section class="admin-page container"><a class="back-link" href="{{ url_for('admin_orders') }}">← Back to orders</a><div class="admin-heading"><div><p class="eyebrow">ORDER #{{ order.id }} · {{ order.username }}</p><h1>Order <em>details.</em></h1></div><span class="status status-{{ order.status | lower }} large-status">{{ order.status }}</span></div>
+    <div class="admin-detail-grid"><section class="admin-detail-card"><h2>Items</h2>{% for item in items %}<div class="admin-item-row"><span>{{ item.quantity }} × {{ item.name }}</span><strong>{{ (item.price * item.quantity) | price }}</strong></div>{% endfor %}<div class="admin-item-row admin-total"><span>Total</span><strong>{{ order.total | price }} · {{ order.payment_status }}</strong></div>{% if order.notes %}<p class="order-note"><strong>Student instructions:</strong> {{ order.notes }}</p>{% endif %}</section>
+      <aside class="admin-action-card"><h2>Update status</h2>{% if allowed_statuses %}<p>Choose the next permitted step for this order.</p><form action="{{ url_for('update_order_status', order_id=order.id) }}" method="post"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}">{% for status in allowed_statuses %}<button class="status-action {{ 'reject-action' if status == 'Rejected' else '' }}" name="status" value="{{ status }}" type="submit">Mark as {{ status }}</button>{% endfor %}</form>{% else %}<p>This order is final and cannot be changed further.</p>{% endif %}</aside></div>
+  </section>
+{% endblock %}

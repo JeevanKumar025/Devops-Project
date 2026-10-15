@@ -1,0 +1,15 @@
+# Only the backend microservices may talk to PostgreSQL (needs a CNI that enforces NetworkPolicy, e.g. Azure CNI/Calico).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: postgres-only-from-backend
+  namespace: campuseats
+spec:
+  podSelector:
+    matchLabels: { app: postgres }
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: { tier: backend }
+      ports: [{ port: 5432 }]

@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Profile | CampusEats{% endblock %}
+{% block main %}
+  <section class="page-heading"><div class="container"><p class="eyebrow">YOUR ACCOUNT</p><h1>Profile <em>details.</em></h1></div></section>
+  <section class="profile-page container"><article class="profile-card"><span class="profile-avatar">{{ user.username[0] | upper }}</span><h2>{{ user.username }}</h2><span class="profile-role">{{ user.role }}</span><dl><div><dt>Username</dt><dd>{{ user.username }}</dd></div><div><dt>Member since</dt><dd>{{ user.created_at[:10] }}</dd></div></dl><p class="profile-note">Password changes and account editing are intentionally not included in this first version.</p></article></section>
+{% endblock %}

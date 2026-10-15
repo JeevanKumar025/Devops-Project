@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Manage orders | CampusEats{% endblock %}
+{% block main %}
+  <section class="admin-page container"><div class="admin-heading"><div><p class="eyebrow">CANTEEN ADMIN</p><h1>Manage <em>orders.</em></h1></div><a class="button button-ghost" href="{{ url_for('admin_dashboard') }}">← Dashboard</a></div>
+    <form class="admin-filters" method="get"><label for="status">Show</label><select id="status" name="status" onchange="this.form.submit()"><option value="">All statuses</option>{% for status in statuses %}<option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></form>
+    {% if orders %}<div class="admin-order-list full-list">{% for order in orders %}<a href="{{ url_for('admin_order', order_id=order.id) }}"><span><strong>#{{ order.id }}</strong><small>{{ order.created_at[:16] }}</small></span><span><strong>{{ order.username }}</strong><small>{{ order.items }}</small></span><span class="status status-{{ order.status | lower }}">{{ order.status }}</span><strong>{{ order.total | price }}</strong><span>→</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span>📋</span><h2>No matching orders</h2><p>Try selecting a different order status.</p></div>{% endif %}
+  </section>
+{% endblock %}

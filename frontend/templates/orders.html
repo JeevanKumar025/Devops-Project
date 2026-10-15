@@ -1,0 +1,6 @@
+{% extends "layout.html" %}
+{% block title %}Your orders | CampusEats{% endblock %}
+{% block main %}
+  <section class="page-heading"><div class="container"><p class="eyebrow">YOUR CAMPUS MEALS</p><h1>Order <em>history.</em></h1></div></section>
+  <section class="orders-page container">{% if orders %}<div class="orders-table"><div class="orders-table-heading"><span>Order</span><span>Items</span><span>Status</span><span>Total</span><span></span></div>{% for item in orders %}<a class="orders-table-row" href="{{ url_for('order', order_id=item.id) }}"><span><strong>#{{ item.id }}</strong><small>{{ item.created_at[:16] }}</small></span><span>{{ item.items }}</span><span class="status status-{{ item.status | lower }}">{{ item.status }}</span><strong>{{ item.total | price }}</strong><span>→</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span>📋</span><h2>No orders yet</h2><p>Your food-order history will live here.</p><a class="button button-primary" href="{{ url_for('menu') }}">Browse menu →</a></div>{% endif %}</section>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Checkout | CampusEats{% endblock %}
+{% block main %}
+  <section class="page-heading"><div class="container"><p class="eyebrow">ONE LAST STEP</p><h1>Confirm your <em>order.</em></h1></div></section>
+  <section class="checkout-page container"><form method="post" class="checkout-form"><input name="csrf_token" type="hidden" value="{{ csrf_token() }}"><div class="checkout-panel"><h2>Pickup details</h2><div class="pickup-method"><i data-lucide="store" aria-hidden="true"></i><div><strong>Payment method</strong><p><label><input type="radio" name="payment_method" value="pay_at_canteen" {{ 'checked' if payment_method != 'online_mock' }}> Pay at Canteen when you collect</label><br><label><input type="radio" name="payment_method" value="online_mock" {{ 'checked' if payment_method == 'online_mock' }}> Pay now (demo payment, no real money)</label></p></div></div><label for="notes">Instructions <small>(optional)</small></label><textarea id="notes" name="notes" maxlength="300" placeholder="For example: no onions, less spicy...">{{ notes }}</textarea><p class="field-note">Maximum 300 characters.</p></div><button class="button button-primary button-large form-submit" type="submit">Place order · {{ total | price }}</button></form>
+    <aside class="order-summary"><h2>Your order</h2>{% for item in items %}<div class="checkout-item"><span>{{ item.quantity }} × {{ item.name }}</span><strong>{{ item.line_total | price }}</strong></div>{% endfor %}<div class="summary-total"><span>Total</span><strong>{{ total | price }}</strong></div></aside>
+  </section>
+{% endblock %}

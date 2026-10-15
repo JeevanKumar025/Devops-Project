@@ -1,0 +1,28 @@
+# Deploy everything with:  kubectl apply -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: campuseats
+resources:
+  - namespace.yaml
+  - secrets.yaml
+  - postgres.yaml
+  - user-service.yaml
+  - menu-service.yaml
+  - payment-service.yaml
+  - order-service.yaml
+  - frontend.yaml
+  - gateway.yaml
+  - hpa.yaml
+  - networkpolicy.yaml
+  - monitoring.yaml
+configMapGenerator:
+  - name: postgres-init
+    files: [init.sql=monitoring/postgres-init.sql]
+  - name: prometheus-config
+    files: [prometheus.yml=monitoring/prometheus.yml]
+  - name: grafana-datasources
+    files: [prometheus.yml=monitoring/grafana-datasource.yml]
+  - name: grafana-dashboard-provider
+    files: [dashboards.yml=monitoring/grafana-dashboard-provider.yml]
+  - name: grafana-dashboards
+    files: [campuseats.json=monitoring/campuseats-dashboard.json]

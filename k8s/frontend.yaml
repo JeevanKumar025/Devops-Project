@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: campuseats
+  labels: { app: frontend }
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }
+  selector:
+    matchLabels: { app: frontend }
+  template:
+    metadata:
+      labels: { app: frontend, tier: web }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+    spec:
+      containers:
+        - name: frontend
+          image: campuseats/frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 5000 }]
+          env:
+            - { name: GATEWAY_URL, value: "http://gateway" }
+            - name: SECRET_KEY
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: SECRET_KEY } }
+          readinessProbe:
+            httpGet: { path: /health, port: 5000 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 5000 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 300m, memory: 256Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: campuseats
+spec:
+  type: ClusterIP
+  selector: { app: frontend }
+  ports:
+    - { port: 5000, targetPort: 5000 }

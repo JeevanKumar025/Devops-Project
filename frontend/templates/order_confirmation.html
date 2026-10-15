@@ -1,0 +1,5 @@
+{% extends "layout.html" %}
+{% block title %}Order placed | CampusEats{% endblock %}
+{% block main %}
+  <section class="confirmation-page"><div class="confirmation-card"><span class="confirmation-icon">✓</span><p class="eyebrow">ORDER PLACED SUCCESSFULLY</p><h1>We’re on it!</h1><p>Your order <strong>#{{ order_id }}</strong> is now pending canteen approval. {% if order and order.payment_status == 'Paid' %}Payment of {{ total | price }} received (demo payment).{% else %}Please pay {{ total | price }} when you collect it.{% endif %}</p><div class="pending-status">● Pending</div><a class="button button-primary button-large" href="{{ url_for('order', order_id=order_id) }}">Track order →</a></div></section>
+{% endblock %}

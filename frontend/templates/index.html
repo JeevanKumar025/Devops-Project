@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% block title %}CampusEats | Campus food, without the queue{% endblock %}
+
+{% block main %}
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">THE SMART WAY TO EAT ON CAMPUS</p>
+        <h1>Great food,<br><em>zero queue.</em></h1>
+        <p class="hero-text">Order from your favourite campus canteen, track every step, and collect your meal when it is ready.</p>
+        <div class="hero-actions">
+          <a class="button button-primary button-large" href="{{ url_for('menu') }}">Explore the menu <span aria-hidden="true">→</span></a>
+          <a class="text-link" href="#how-it-works">See how it works <span aria-hidden="true">↓</span></a>
+        </div>
+        <div class="social-proof" aria-label="CampusEats benefits">
+          <div class="avatars" aria-hidden="true"><span>J</span><span>A</span><span>R</span><span>+</span></div>
+          <p><strong>Made for campus life</strong><br>Fast pickup, every day</p>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="A preview of a CampusEats order">
+        <div class="sun-shape"></div>
+        <div class="food-orb">🍔</div>
+        <article class="order-preview">
+          <div class="preview-heading"><span>Today’s order</span><span class="status-chip">Preparing</span></div>
+          <div class="preview-item"><span class="item-icon">🍔</span><span><strong>Classic Burger</strong><small>1 item · ₹120</small></span></div>
+          <div class="preview-item"><span class="item-icon">🥤</span><span><strong>Cold Coffee</strong><small>1 item · ₹60</small></span></div>
+          <div class="preview-total"><span>Total</span><strong>₹180</strong></div>
+          <div class="pickup-note"><span>✓</span> Ready for pickup in 12 min</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories section" id="categories">
+    <div class="container">
+      <div class="section-heading"><div><p class="eyebrow">FIND YOUR FAVOURITE</p><h2>What are you craving?</h2></div><a class="text-link" href="{{ url_for('menu') }}">View full menu →</a></div>
+      <div class="category-grid">
+        {% for icon, name, description, tone in [("☀️", "Breakfast", "Start your day right", "yellow"), ("🍛", "Meals", "Comfort on a plate", "orange"), ("🍟", "Snacks", "Between-class bites", "pink"), ("🍕", "Fast Food", "Campus favourites", "green"), ("🧋", "Beverages", "Sip and recharge", "purple"), ("🍰", "Desserts", "A sweet finish", "blue")] %}
+          <a class="category-card {{ tone }}" href="{{ url_for('menu', category=loop.index) }}">
+            <span class="category-icon">{{ icon }}</span><span><strong>{{ name }}</strong><small>{{ description }}</small></span><span class="card-arrow">→</span>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section class="steps section" id="how-it-works">
+    <div class="container">
+      <p class="eyebrow">SIMPLE BY DESIGN</p><h2>Lunch, on your schedule.</h2>
+      <div class="steps-grid">
+        <article><span class="step-number">01</span><div class="step-icon">🍽️</div><h3>Choose your meal</h3><p>Browse the canteen menu and find something you love.</p></article>
+        <article><span class="step-number">02</span><div class="step-icon">📱</div><h3>Order in seconds</h3><p>Add it to your cart and place your order from anywhere on campus.</p></article>
+        <article><span class="step-number">03</span><div class="step-icon">✨</div><h3>Pick up when ready</h3><p>Get live updates, skip the line, and enjoy your food fresh.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section"><div class="container cta"><div><p class="eyebrow">HUNGRY YET?</p><h2>Your next meal is<br>just a few taps away.</h2></div><a class="button button-light button-large" href="{{ url_for('menu') }}">Start ordering <span aria-hidden="true">→</span></a></div></section>
+{% endblock %}

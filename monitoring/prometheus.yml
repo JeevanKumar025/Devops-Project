@@ -1,0 +1,7 @@
+global:
+  scrape_interval: 15s
+scrape_configs:
+  - job_name: campuseats
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["user-service:5001", "menu-service:5002", "order-service:5003", "payment-service:5004", "frontend:5000"]

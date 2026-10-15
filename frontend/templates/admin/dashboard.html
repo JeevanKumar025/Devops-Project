@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block title %}Admin dashboard | CampusEats{% endblock %}
+{% block main %}
+  <section class="admin-page container"><div class="admin-heading"><div><p class="eyebrow">CANTEEN ADMIN</p><h1>Today’s <em>overview.</em></h1></div><a class="button button-primary" href="{{ url_for('add_food') }}">Add menu item +</a></div>
+    <div class="admin-stats"><article><i data-lucide="clipboard-list" aria-hidden="true"></i><p>Orders</p><strong>{{ overview.orders }}</strong></article><article><i data-lucide="indian-rupee" aria-hidden="true"></i><p>Revenue</p><strong>{{ overview.revenue | price }}</strong></article><article><i data-lucide="clock-3" aria-hidden="true"></i><p>Pending</p><strong>{{ overview.pending }}</strong></article><article><i data-lucide="circle-check" aria-hidden="true"></i><p>Completed</p><strong>{{ overview.completed }}</strong></article></div>
+    <div class="admin-section-heading"><h2>Incoming orders</h2><a class="text-link" href="{{ url_for('admin_orders') }}">View all orders →</a></div>
+    {% if incoming_orders %}<div class="admin-order-list">{% for order in incoming_orders %}<a href="{{ url_for('admin_order', order_id=order.id) }}"><span><strong>#{{ order.id }}</strong><small>{{ order.created_at[:16] }}</small></span><span><strong>{{ order.username }}</strong><small>{{ order.items }}</small></span><span class="status status-{{ order.status | lower }}">{{ order.status }}</span><strong>{{ order.total | price }}</strong><span>→</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span>📋</span><h2>No orders today</h2><p>New student orders will appear here.</p></div>{% endif %}
+  </section>
+{% endblock %}

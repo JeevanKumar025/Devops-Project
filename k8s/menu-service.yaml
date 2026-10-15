@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: menu-service
+  namespace: campuseats
+  labels: { app: menu-service }
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }
+  selector:
+    matchLabels: { app: menu-service }
+  template:
+    metadata:
+      labels: { app: menu-service, tier: backend }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5002"
+    spec:
+      containers:
+        - name: menu-service
+          image: campuseats/menu-service:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 5002 }]
+          env:
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: JWT_SECRET } }
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: MENU_DATABASE_URL } }
+          readinessProbe:
+            httpGet: { path: /health, port: 5002 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 5002 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 300m, memory: 256Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: menu-service
+  namespace: campuseats
+spec:
+  type: ClusterIP
+  selector: { app: menu-service }
+  ports:
+    - { port: 5002, targetPort: 5002 }

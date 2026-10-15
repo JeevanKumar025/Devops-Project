@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard | CampusEats{% endblock %}
+{% block main %}
+  <section class="dashboard-page container"><div class="dashboard-welcome"><p class="eyebrow">STUDENT DASHBOARD</p><h1>Hello, <em>{{ user.username }}</em> 👋</h1><p>Everything you need for a smoother campus food break.</p></div>
+    <div class="dashboard-grid"><section class="dashboard-main">
+      <div class="section-label"><h2>Active order</h2>{% if active_order %}<a class="text-link" href="{{ url_for('order', order_id=active_order.id) }}">Track order →</a>{% endif %}</div>
+      {% if active_order %}<article class="active-order"><div><p class="order-number">ORDER #{{ active_order.id }}</p><h2>{{ active_order.items }}</h2><p class="order-date">Placed {{ active_order.created_at[:16] }}</p></div><div class="status-block"><span class="status status-{{ active_order.status | lower }}">{{ active_order.status }}</span><strong>{{ active_order.total | price }}</strong></div></article>
+      {% else %}<div class="dashboard-empty"><i data-lucide="utensils" aria-hidden="true"></i><div><h3>No active order</h3><p>Ready for your next campus meal?</p></div><a class="button button-primary" href="{{ url_for('menu') }}">Browse menu →</a></div>{% endif %}
+      <div class="section-label recent-label"><h2>Recent orders</h2><a class="text-link" href="{{ url_for('orders') }}">View all →</a></div>
+      {% if recent_orders %}<div class="recent-orders">{% for item in recent_orders %}<a class="recent-order" href="{{ url_for('order', order_id=item.id) }}"><div><strong>#{{ item.id }}</strong><span>{{ item.items }}</span></div><span class="status status-{{ item.status | lower }}">{{ item.status }}</span><strong>{{ item.total | price }}</strong><span>→</span></a>{% endfor %}</div>{% else %}<p class="muted-copy">Your completed and past orders will appear here.</p>{% endif %}
+    </section>
+    <aside class="dashboard-side"><article class="stat-card"><i data-lucide="receipt-text" aria-hidden="true"></i><p>Total orders</p><strong>{{ total_orders }}</strong></article><article class="quick-links"><h2>Quick links</h2><a href="{{ url_for('menu') }}"><i data-lucide="utensils" aria-hidden="true"></i> Browse menu <b>→</b></a><a href="{{ url_for('cart') }}"><i data-lucide="shopping-bag" aria-hidden="true"></i> Your cart <b>→</b></a><a href="{{ url_for('profile') }}"><i data-lucide="user-round" aria-hidden="true"></i> Account details <b>→</b></a></article></aside></div>
+  </section>
+{% endblock %}

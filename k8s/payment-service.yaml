@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: campuseats
+  labels: { app: payment-service }
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }
+  selector:
+    matchLabels: { app: payment-service }
+  template:
+    metadata:
+      labels: { app: payment-service, tier: backend }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5004"
+    spec:
+      containers:
+        - name: payment-service
+          image: campuseats/payment-service:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 5004 }]
+          env:
+            - name: JWT_SECRET
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: JWT_SECRET } }
+            - name: DATABASE_URL
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: PAYMENT_DATABASE_URL } }
+          readinessProbe:
+            httpGet: { path: /health, port: 5004 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /health, port: 5004 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 300m, memory: 256Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: campuseats
+spec:
+  type: ClusterIP
+  selector: { app: payment-service }
+  ports:
+    - { port: 5004, targetPort: 5004 }

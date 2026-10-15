@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Log in | CampusEats{% endblock %}
+{% block main %}
+  <section class="auth-page"><div class="auth-card">
+    <p class="eyebrow">WELCOME BACK</p><h1>Good to see you.</h1>
+    <p class="auth-intro">Log in to order campus favourites and track every meal.</p>
+    <form action="{{ url_for('login') }}" method="post" class="auth-form">
+      <input name="csrf_token" type="hidden" value="{{ csrf_token() }}">
+      <label for="username">Username</label><input id="username" name="username" type="text" autocomplete="username" required autofocus>
+      <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required>
+      <button class="button button-primary button-large form-submit" type="submit">Log in <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-switch">New to CampusEats? <a href="{{ url_for('register') }}">Create an account</a></p>
+  </div></section>
+{% endblock %}

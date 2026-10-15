@@ -1,0 +1,86 @@
+# Prometheus (scrapes every pod annotated prometheus.io/scrape=true) and Grafana (pre-provisioned dashboard).
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: prometheus, namespace: campuseats }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: { name: prometheus-pod-reader, namespace: campuseats }
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: { name: prometheus-pod-reader, namespace: campuseats }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: prometheus-pod-reader }
+subjects:
+  - { kind: ServiceAccount, name: prometheus, namespace: campuseats }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: prometheus, namespace: campuseats }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: prometheus } }
+  template:
+    metadata: { labels: { app: prometheus } }
+    spec:
+      serviceAccountName: prometheus
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.54.1
+          args: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=3d"]
+          ports: [{ containerPort: 9090 }]
+          readinessProbe: { httpGet: { path: /-/ready, port: 9090 } }
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 512Mi }
+          volumeMounts: [{ name: config, mountPath: /etc/prometheus }]
+      volumes:
+        - name: config
+          configMap: { name: prometheus-config }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: prometheus, namespace: campuseats }
+spec:
+  selector: { app: prometheus }
+  ports: [{ port: 9090 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: grafana, namespace: campuseats }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: grafana } }
+  template:
+    metadata: { labels: { app: grafana } }
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.2.0
+          ports: [{ containerPort: 3000 }]
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom: { secretKeyRef: { name: campuseats-secrets, key: GRAFANA_PASSWORD } }
+          readinessProbe: { httpGet: { path: /api/health, port: 3000 } }
+          resources:
+            requests: { cpu: 50m, memory: 128Mi }
+            limits: { cpu: 300m, memory: 384Mi }
+          volumeMounts:
+            - { name: datasources, mountPath: /etc/grafana/provisioning/datasources }
+            - { name: dashboard-provider, mountPath: /etc/grafana/provisioning/dashboards }
+            - { name: dashboards, mountPath: /var/lib/grafana/dashboards }
+      volumes:
+        - { name: datasources, configMap: { name: grafana-datasources } }
+        - { name: dashboard-provider, configMap: { name: grafana-dashboard-provider } }
+        - { name: dashboards, configMap: { name: grafana-dashboards } }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: grafana, namespace: campuseats }
+spec:
+  selector: { app: grafana }
+  ports: [{ port: 3000 }]

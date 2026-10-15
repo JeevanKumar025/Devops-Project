@@ -1,0 +1,7 @@
+/* Lucide icon sizing and color alignment for CampusEats. */
+svg.lucide { width: 1em; height: 1em; vertical-align: -.15em; }
+.empty-state > svg { width: 44px; height: 44px; color: var(--orange); }
+.pickup-method > svg { width: 25px; height: 25px; color: #4d7c39; flex: 0 0 auto; }
+.dashboard-empty > svg { width: 33px; height: 33px; color: var(--orange); }
+.stat-card > svg { width: 24px; height: 24px; }
+.admin-stats svg { display: grid; width: 30px; height: 30px; place-items: center; padding: 6px; border-radius: 8px; background: #edf3d0; color: #506e23; }

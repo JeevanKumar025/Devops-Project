@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+  namespace: campuseats
+  labels: { app: gateway }
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate: { maxUnavailable: 0, maxSurge: 1 }
+  selector:
+    matchLabels: { app: gateway }
+  template:
+    metadata:
+      labels: { app: gateway, tier: web }
+    spec:
+      containers:
+        - name: gateway
+          image: campuseats/gateway:latest
+          imagePullPolicy: IfNotPresent
+          ports: [{ containerPort: 80 }]
+          env:
+            []
+          readinessProbe:
+            httpGet: { path: /gateway-health, port: 80 }
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /gateway-health, port: 80 }
+            initialDelaySeconds: 20
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 50m, memory: 64Mi }
+            limits: { cpu: 300m, memory: 256Mi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway
+  namespace: campuseats
+spec:
+  type: LoadBalancer
+  selector: { app: gateway }
+  ports:
+    - { port: 80, targetPort: 80 }

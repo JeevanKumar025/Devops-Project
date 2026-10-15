@@ -1,0 +1,91 @@
+/* CampusEats motion system: short, purposeful feedback across every view. */
+:root { --ease-out: cubic-bezier(.22, 1, .36, 1); --ease-spring: cubic-bezier(.34, 1.56, .64, 1); }
+
+body { animation: page-in .42s var(--ease-out) both; }
+.site-header { animation: header-in .5s var(--ease-out) both; }
+.site-footer { animation: footer-in .5s var(--ease-out) both; }
+
+.button, .text-link, .nav-links a, .brand, .category-card, .quick-links a,
+.recent-order, .orders-table-row, .admin-order-list a, .admin-food-list article {
+  transition: transform .22s var(--ease-out), box-shadow .22s var(--ease-out), color .22s ease,
+    background-color .22s ease, border-color .22s ease, opacity .22s ease;
+}
+.button { position: relative; overflow: hidden; }
+.button::after { position: absolute; inset: 0; background: linear-gradient(110deg, transparent 22%, rgba(255,255,255,.24) 45%, transparent 70%); content: ""; transform: translateX(-125%); transition: transform .55s ease; }
+.button:hover::after { transform: translateX(125%); }
+.button:active { transform: translateY(1px) scale(.98); }
+.text-link:hover { color: var(--orange); transform: translateX(3px); }
+.nav-links > a:not(.button):hover { color: var(--orange); transform: translateY(-1px); }
+.brand:hover { transform: translateY(-1px); }
+.brand:hover .brand-mark { transform: rotate(-7deg) scale(1.06); }
+.brand-mark { transition: transform .3s var(--ease-spring); }
+
+.hero-copy > *, .menu-hero > *, .page-heading > * { animation: rise-in .6s var(--ease-out) both; }
+.hero-copy > *:nth-child(2) { animation-delay: .06s; }.hero-copy > *:nth-child(3) { animation-delay: .12s; }.hero-copy > *:nth-child(4) { animation-delay: .18s; }.hero-copy > *:nth-child(5) { animation-delay: .24s; }
+.hero-art { animation: art-in .75s .12s var(--ease-spring) both; }
+.food-orb { animation: food-float 5s ease-in-out infinite; }
+.order-preview { animation: card-float 5.5s .4s ease-in-out infinite; }
+.sun-shape { animation: sun-breathe 6s ease-in-out infinite; }
+
+.category-card, .steps-grid article, .food-card, .admin-stats article { animation: rise-in .55s var(--ease-out) both; }
+.category-card:nth-child(2), .food-card:nth-child(2), .admin-stats article:nth-child(2) { animation-delay: .06s; }
+.category-card:nth-child(3), .food-card:nth-child(3), .admin-stats article:nth-child(3) { animation-delay: .12s; }
+.category-card:nth-child(4), .food-card:nth-child(4), .admin-stats article:nth-child(4) { animation-delay: .18s; }
+.category-card:nth-child(5), .food-card:nth-child(5) { animation-delay: .24s; }.category-card:nth-child(6), .food-card:nth-child(6) { animation-delay: .3s; }
+.category-card:hover { transform: translateY(-6px) rotate(-.35deg); }
+.steps-grid article:hover .step-icon { transform: translateY(-5px) rotate(-5deg); box-shadow: 0 12px 22px rgba(24,52,44,.12); }
+.step-icon { transition: transform .28s var(--ease-spring), box-shadow .28s ease; }
+
+.food-card { transform: translateZ(0); transition: transform .3s var(--ease-out), box-shadow .3s ease, border-color .3s ease; }
+.food-card:hover { transform: translateY(-8px); border-color: rgba(244,90,54,.35); box-shadow: 0 18px 30px rgba(33,58,43,.14); }
+.food-image { overflow: hidden; }.food-image img { transition: transform .55s var(--ease-out), filter .45s ease; }
+.food-card:hover .food-image img { transform: scale(1.08); filter: saturate(1.12) contrast(1.03); }
+.food-card:hover .food-category { color: var(--orange); }.food-category { transition: color .2s ease; }
+.food-card .button:hover { transform: translateY(-2px) scale(1.04); }
+
+.menu-filters input, .menu-filters select, .auth-form input, .food-form input, .food-form textarea, .food-form select, .checkout-form textarea { transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+.menu-filters input:focus, .menu-filters select:focus, .auth-form input:focus, .food-form input:focus, .food-form textarea:focus, .food-form select:focus, .checkout-form textarea:focus { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(33,58,43,.10); }
+.flash { animation: flash-in .45s var(--ease-spring) both; }.flash:hover { transform: translateX(3px); }
+.auth-card, .confirmation-card, .profile-card { animation: modal-in .55s var(--ease-spring) both; }
+.confirmation-icon { animation: success-pop .65s .2s var(--ease-spring) both; }
+
+.cart-row { animation: row-in .4s var(--ease-out) both; transition: background-color .2s ease, transform .2s var(--ease-out); }.cart-row:hover { background:#fbfaf3; transform: translateX(4px); }
+.cart-row:nth-child(2) { animation-delay:.05s; }.cart-row:nth-child(3) { animation-delay:.1s; }.cart-row:nth-child(4) { animation-delay:.15s; }
+.quantity-controls button { transition: transform .18s var(--ease-spring), background-color .18s ease, border-color .18s ease; }.quantity-controls button:hover { transform: scale(1.13); background:var(--lime); border-color:var(--lime); }
+.order-summary, .checkout-panel, .tracking-card, .ordered-items, .order-help, .admin-detail-card, .admin-action-card { animation: rise-in .5s var(--ease-out) both; }
+.order-summary { animation-delay:.1s; }.checkout-panel { animation-delay:.05s; }
+
+.status { transition: transform .22s var(--ease-spring), box-shadow .22s ease, filter .22s ease; }.status:hover { transform: scale(1.06); box-shadow:0 4px 10px rgba(24,52,44,.12); filter:saturate(1.15); }
+.progress-step.done { animation: step-pop .45s var(--ease-spring) both; }.progress-step.done:nth-child(2) { animation-delay:.08s; }.progress-step.done:nth-child(3) { animation-delay:.16s; }.progress-step.done:nth-child(4) { animation-delay:.24s; }.progress-step.done:nth-child(5) { animation-delay:.32s; }
+.admin-stats article:hover, .stat-card:hover { transform: translateY(-5px); box-shadow:0 15px 28px rgba(33,58,43,.14); }
+.admin-stats article, .stat-card { transition: transform .25s var(--ease-out), box-shadow .25s ease; }
+.admin-food-list article:hover { transform: translateX(5px); border-color:rgba(244,90,54,.35); box-shadow:0 9px 18px rgba(33,58,43,.08); }
+.admin-order-list a:hover, .orders-table-row:hover, .recent-order:hover { transform: translateX(4px); }
+.quick-links a:hover { padding-left:5px; color:var(--orange); }
+
+.empty-state { animation: modal-in .55s var(--ease-spring) both; }.empty-state > svg { animation: empty-float 3s ease-in-out infinite; }
+.is-loading { pointer-events:none; opacity:.78; }.is-loading::before { display:inline-block; width:13px; height:13px; margin-right:7px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; content:""; animation: spin .65s linear infinite; vertical-align:-2px; }
+.cart-bump { animation: cart-bump .5s var(--ease-spring) both; }
+
+[data-reveal] { opacity:0; transform:translateY(20px); transition:opacity .55s var(--ease-out), transform .55s var(--ease-out); } [data-reveal].is-visible { opacity:1; transform:none; }
+
+@keyframes page-in { from { opacity:0; } to { opacity:1; } }
+@keyframes header-in { from { opacity:0; transform:translateY(-12px); } to { opacity:1; transform:none; } }
+@keyframes footer-in { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+@keyframes rise-in { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:none; } }
+@keyframes row-in { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:none; } }
+@keyframes art-in { from { opacity:0; transform:translateY(28px) scale(.94); } to { opacity:1; transform:none; } }
+@keyframes modal-in { from { opacity:0; transform:translateY(16px) scale(.96); } to { opacity:1; transform:none; } }
+@keyframes flash-in { from { opacity:0; transform:translateY(-10px) scale(.96); } to { opacity:1; transform:none; } }
+@keyframes success-pop { from { opacity:0; transform:scale(.3) rotate(-25deg); } to { opacity:1; transform:none; } }
+@keyframes step-pop { from { transform:scale(.45); } to { transform:scale(1); } }
+@keyframes food-float { 0%,100% { transform:rotate(-8deg) translateY(0); } 50% { transform:rotate(-4deg) translateY(-10px); } }
+@keyframes card-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
+@keyframes sun-breathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.04); } }
+@keyframes empty-float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-7px); } }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes cart-bump { 0% { transform:scale(1); } 45% { transform:scale(1.38); color:var(--orange); } 100% { transform:scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; }
+}
